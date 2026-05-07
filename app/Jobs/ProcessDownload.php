@@ -53,4 +53,12 @@ class ProcessDownload implements ShouldQueue
             throw $e;
         }
     }
+
+    public function failed(Throwable $exception): void
+    {
+        $this->download->update([
+            'status'        => DownloadStatus::Failed,
+            'error_message' => $exception->getMessage(),
+        ]);
+    }
 }

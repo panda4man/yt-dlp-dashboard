@@ -99,6 +99,27 @@ it('allows force re-download of completed video', function () {
     Queue::assertPushed(ProcessDownload::class);
 });
 
+it('allows re-queuing a failed download without force flag', function () {
+    Queue::fake();
+
+    Download::factory()->create([
+        'youtube_url' => 'https://youtube.com/watch?v=abc123',
+        'status'      => DownloadStatus::Failed,
+    ]);
+
+    $mock = Mockery::mock(YtDlpService::class);
+    $mock->shouldReceive('getMetadata')->andReturn([
+        'title' => 'My Video', 'channel' => 'My Channel',
+        'duration' => 300, 'thumbnail' => 'https://i.ytimg.com/vi/abc/default.jpg',
+    ]);
+    app()->instance(YtDlpService::class, $mock);
+
+    $this->post('/videos', ['url' => 'https://youtube.com/watch?v=abc123'])
+        ->assertRedirect('/');
+
+    Queue::assertPushed(ProcessDownload::class);
+});
+
 it('returns only pending and processing downloads for queue poll', function () {
     Download::factory()->create(['status' => DownloadStatus::Pending]);
     Download::factory()->create(['status' => DownloadStatus::Processing]);

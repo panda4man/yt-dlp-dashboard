@@ -44,6 +44,18 @@ it('processes download successfully and updates model', function () {
         ->and($download->completed_at)->not->toBeNull();
 });
 
+it('marks download as failed via the failed() queue callback', function () {
+    $download = Download::factory()->create(['status' => DownloadStatus::Pending]);
+
+    $job = new ProcessDownload($download);
+    $job->failed(new RuntimeException('Queue-level failure'));
+
+    $download->refresh();
+
+    expect($download->status)->toBe(DownloadStatus::Failed)
+        ->and($download->error_message)->toBe('Queue-level failure');
+});
+
 it('marks download as failed when yt-dlp throws', function () {
     $download = Download::factory()->create(['status' => DownloadStatus::Pending]);
 
