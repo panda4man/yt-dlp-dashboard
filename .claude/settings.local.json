@@ -28,7 +28,9 @@
       "Bash(dpkg -l)",
       "Read(//usr/lib/php/**)",
       "Read(//usr/**)",
-      "Bash(php vendor/bin/pest --version)"
+      "Bash(php vendor/bin/pest --version)",
+      "Bash(sudo ss -tlnp)",
+      "Bash(docker network *)"
     ]
   },
   "enabledPlugins": {

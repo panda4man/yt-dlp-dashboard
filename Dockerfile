@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     git \
     nodejs \
     npm \
+    libzip-dev \
+    libpng-dev \
+    libjpeg-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp \
@@ -23,10 +26,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader --no-dev
+RUN composer install --no-scripts --no-autoloader
 
 COPY . .
 RUN composer dump-autoload --optimize
+RUN cp .env.example .env && php artisan key:generate --force
 
 RUN npm ci && npm run build
 
