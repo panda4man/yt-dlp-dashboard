@@ -12,7 +12,17 @@
       "Bash(git -C /home/aclinton/Dev/yt-dlp-dashboad log --all --name-status)",
       "Bash(composer require *)",
       "Bash(npm install *)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(php -m)",
+      "Bash(php -i)",
+      "Bash(mysql -u root -e \"CREATE DATABASE IF NOT EXISTS yt_dlp_dashboard_test;\")",
+      "Bash(apt-get update *)",
+      "Bash(apt-get install *)",
+      "Bash(chmod 666 /home/aclinton/Dev/yt-dlp-dashboad/database/test.sqlite)",
+      "Bash(systemctl status *)",
+      "Bash(docker-compose up *)",
+      "Bash(docker compose *)",
+      "Bash(docker exec *)"
     ]
   },
   "enabledPlugins": {
