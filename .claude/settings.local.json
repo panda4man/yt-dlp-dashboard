@@ -6,7 +6,11 @@
       "Bash(git commit -m ' *)",
       "Bash(composer create-project *)",
       "Bash(php artisan *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(grep *)",
+      "Bash(git -C /home/aclinton/Dev/yt-dlp-dashboad show --stat HEAD)",
+      "Bash(git -C /home/aclinton/Dev/yt-dlp-dashboad log --all --name-status)",
+      "Bash(composer require *)"
     ]
   },
   "enabledPlugins": {
