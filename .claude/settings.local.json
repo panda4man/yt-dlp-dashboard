@@ -22,7 +22,13 @@
       "Bash(systemctl status *)",
       "Bash(docker-compose up *)",
       "Bash(docker compose *)",
-      "Bash(docker exec *)"
+      "Bash(docker exec *)",
+      "Bash(php -r \"echo PHP_VERSION;\")",
+      "Bash(sudo apt-get install -y php8.3-sqlite3)",
+      "Bash(dpkg -l)",
+      "Read(//usr/lib/php/**)",
+      "Read(//usr/**)",
+      "Bash(php vendor/bin/pest --version)"
     ]
   },
   "enabledPlugins": {
