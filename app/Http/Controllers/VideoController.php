@@ -56,6 +56,9 @@ class VideoController extends Controller
             'channel'          => $metadata['channel'],
             'duration_seconds' => $metadata['duration'],
             'thumbnail_url'    => $metadata['thumbnail'],
+            'youtube_video_id' => $metadata['id'] ?? null,
+            'uploaded_at'      => $metadata['uploaded_at'] ?? null,
+            'description'      => $metadata['description'] ?? null,
             'status'           => DownloadStatus::Pending,
         ]);
 

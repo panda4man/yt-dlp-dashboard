@@ -129,3 +129,27 @@ it('returns only pending and processing downloads for queue poll', function () {
         ->assertOk()
         ->assertJsonCount(2);
 });
+
+it('saves youtube_video_id, uploaded_at, and description on queue submit', function () {
+    Queue::fake();
+
+    $mock = Mockery::mock(YtDlpService::class);
+    $mock->shouldReceive('getMetadata')->andReturn([
+        'title'       => 'My Video',
+        'channel'     => 'My Channel',
+        'duration'    => 300,
+        'thumbnail'   => 'https://i.ytimg.com/vi/abc/default.jpg',
+        'id'          => 'abc123',
+        'uploaded_at' => '2024-03-15',
+        'description' => 'A great video.',
+    ]);
+    app()->instance(YtDlpService::class, $mock);
+
+    $this->post('/videos', ['url' => 'https://youtube.com/watch?v=abc123']);
+
+    $this->assertDatabaseHas('downloads', [
+        'youtube_url'      => 'https://youtube.com/watch?v=abc123',
+        'youtube_video_id' => 'abc123',
+        'uploaded_at'      => '2024-03-15',
+    ]);
+});
