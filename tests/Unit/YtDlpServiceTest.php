@@ -67,3 +67,41 @@ it('throws RuntimeException when download fails', function () {
 
     rmdir($outputDir);
 });
+
+it('returns id, uploaded_at, and description from metadata', function () {
+    Process::fake([
+        '*yt-dlp*' => Process::result(
+            output: json_encode([
+                'title'       => 'Test Video',
+                'uploader'    => 'Test Channel',
+                'duration'    => 245,
+                'thumbnail'   => 'https://i.ytimg.com/vi/abc/maxresdefault.jpg',
+                'id'          => 'abc123',
+                'upload_date' => '20240315',
+                'description' => 'A test description.',
+            ]),
+            exitCode: 0
+        ),
+    ]);
+
+    $metadata = (new YtDlpService())->getMetadata('https://youtube.com/watch?v=abc123');
+
+    expect($metadata['id'])->toBe('abc123')
+        ->and($metadata['uploaded_at'])->toBe('2024-03-15')
+        ->and($metadata['description'])->toBe('A test description.');
+});
+
+it('returns null uploaded_at when upload_date missing', function () {
+    Process::fake([
+        '*yt-dlp*' => Process::result(
+            output: json_encode(['title' => 'Test', 'uploader' => 'Chan', 'duration' => 10, 'thumbnail' => '']),
+            exitCode: 0
+        ),
+    ]);
+
+    $metadata = (new YtDlpService())->getMetadata('https://youtube.com/watch?v=abc123');
+
+    expect($metadata['uploaded_at'])->toBeNull()
+        ->and($metadata['id'])->toBe('')
+        ->and($metadata['description'])->toBeNull();
+});

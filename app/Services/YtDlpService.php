@@ -20,10 +20,15 @@ class YtDlpService
         $data = json_decode($result->output(), true);
 
         return [
-            'title'     => $data['title'] ?? 'Unknown',
-            'channel'   => $data['uploader'] ?? $data['channel'] ?? 'Unknown',
-            'duration'  => (int) ($data['duration'] ?? 0),
-            'thumbnail' => $data['thumbnail'] ?? '',
+            'title'       => $data['title'] ?? 'Unknown',
+            'channel'     => $data['uploader'] ?? $data['channel'] ?? 'Unknown',
+            'duration'    => (int) ($data['duration'] ?? 0),
+            'thumbnail'   => $data['thumbnail'] ?? '',
+            'id'          => $data['id'] ?? '',
+            'uploaded_at' => isset($data['upload_date'])
+                ? \Carbon\Carbon::createFromFormat('Ymd', $data['upload_date'])->toDateString()
+                : null,
+            'description' => $data['description'] ?? null,
         ];
     }
 
