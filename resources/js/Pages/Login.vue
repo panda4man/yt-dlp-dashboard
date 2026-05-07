@@ -12,29 +12,29 @@ function submit() {
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100">
-    <div class="w-full max-w-sm bg-white rounded-lg shadow p-8">
-      <h1 class="text-xl font-semibold text-gray-800 mb-6">yt-dlp Dashboard</h1>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+    <div class="w-full max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+      <h1 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">yt-dlp Dashboard</h1>
 
       <form @submit.prevent="submit" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
           <input
             v-model="form.email"
             type="email"
             autocomplete="email"
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 dark:placeholder-gray-400"
           />
-          <p v-if="form.errors.email" class="text-red-600 text-xs mt-1">{{ form.errors.email }}</p>
+          <p v-if="form.errors.email" class="text-red-600 dark:text-red-400 text-xs mt-1">{{ form.errors.email }}</p>
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
           <input
             v-model="form.password"
             type="password"
             autocomplete="current-password"
-            class="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           />
         </div>
 
