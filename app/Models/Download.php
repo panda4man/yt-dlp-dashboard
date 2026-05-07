@@ -16,6 +16,9 @@ class Download extends Model
         'channel',
         'duration_seconds',
         'thumbnail_url',
+        'youtube_video_id',
+        'uploaded_at',
+        'description',
         'status',
         'file_path',
         'thumbnail_path',
@@ -29,6 +32,7 @@ class Download extends Model
 
     protected $casts = [
         'status'       => DownloadStatus::class,
+        'uploaded_at'  => 'date',
         'started_at'   => 'datetime',
         'completed_at' => 'datetime',
         'exported_at'  => 'datetime',

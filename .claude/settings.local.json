@@ -31,7 +31,8 @@
       "Bash(php vendor/bin/pest --version)",
       "Bash(sudo ss -tlnp)",
       "Bash(docker network *)",
-      "Bash(sudo lsof -i :80)"
+      "Bash(sudo lsof -i :80)",
+      "Bash(tee /tmp/migration.log)"
     ]
   },
   "enabledPlugins": {
