@@ -10,7 +10,9 @@
       "Bash(grep *)",
       "Bash(git -C /home/aclinton/Dev/yt-dlp-dashboad show --stat HEAD)",
       "Bash(git -C /home/aclinton/Dev/yt-dlp-dashboad log --all --name-status)",
-      "Bash(composer require *)"
+      "Bash(composer require *)",
+      "Bash(npm install *)",
+      "Bash(npm run *)"
     ]
   },
   "enabledPlugins": {
