@@ -30,7 +30,8 @@
       "Read(//usr/**)",
       "Bash(php vendor/bin/pest --version)",
       "Bash(sudo ss -tlnp)",
-      "Bash(docker network *)"
+      "Bash(docker network *)",
+      "Bash(sudo lsof -i :80)"
     ]
   },
   "enabledPlugins": {
