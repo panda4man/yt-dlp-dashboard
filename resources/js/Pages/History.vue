@@ -40,18 +40,18 @@ function exportDownload(id) {
 
 <template>
   <AppLayout>
-    <div class="bg-white rounded-lg border border-gray-200">
-      <div class="px-6 py-4 border-b border-gray-100">
-        <h2 class="text-lg font-medium text-gray-800">Download History</h2>
+    <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+      <div class="px-6 py-4 border-b border-gray-100 dark:border-gray-700">
+        <h2 class="text-lg font-medium text-gray-800 dark:text-gray-100">Download History</h2>
       </div>
 
-      <div v-if="downloads.length === 0" class="px-6 py-8 text-center text-sm text-gray-400">
+      <div v-if="downloads.length === 0" class="px-6 py-8 text-center text-sm text-gray-400 dark:text-gray-500">
         No downloads yet.
       </div>
 
       <div v-else class="overflow-x-auto">
         <table class="w-full text-sm">
-          <thead class="bg-gray-50 text-left text-xs text-gray-500 uppercase tracking-wide">
+          <thead class="bg-gray-50 dark:bg-gray-700 text-left text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">
             <tr>
               <th class="px-4 py-3">Thumbnail</th>
               <th class="px-4 py-3">Title</th>
@@ -64,7 +64,7 @@ function exportDownload(id) {
               <th class="px-4 py-3">Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-100">
+          <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
             <tr v-for="dl in downloads" :key="dl.id">
               <td class="px-4 py-3">
                 <img
@@ -73,22 +73,22 @@ function exportDownload(id) {
                   class="w-12 h-12 object-cover rounded"
                   alt=""
                 />
-                <div v-else class="w-12 h-12 bg-gray-100 rounded" />
+                <div v-else class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded" />
               </td>
-              <td class="px-4 py-3 font-medium text-gray-900 max-w-xs truncate">{{ dl.title }}</td>
-              <td class="px-4 py-3 text-gray-600">{{ dl.channel }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ formatDuration(dl.duration_seconds) }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ formatBytes(dl.file_size_bytes) }}</td>
-              <td class="px-4 py-3 text-gray-500">{{ formatSpeed(dl.download_speed_bps) }}</td>
-              <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ formatDate(dl.completed_at) }}</td>
+              <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100 max-w-xs truncate">{{ dl.title }}</td>
+              <td class="px-4 py-3 text-gray-600 dark:text-gray-400">{{ dl.channel }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ formatDuration(dl.duration_seconds) }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ formatBytes(dl.file_size_bytes) }}</td>
+              <td class="px-4 py-3 text-gray-500 dark:text-gray-400">{{ formatSpeed(dl.download_speed_bps) }}</td>
+              <td class="px-4 py-3 text-gray-400 dark:text-gray-500 whitespace-nowrap">{{ formatDate(dl.completed_at) }}</td>
               <td class="px-4 py-3">
                 <span
                   class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
                   :class="{
-                    'bg-yellow-100 text-yellow-800': dl.status === 'pending',
-                    'bg-blue-100 text-blue-800': dl.status === 'processing',
-                    'bg-green-100 text-green-800': dl.status === 'completed',
-                    'bg-red-100 text-red-800': dl.status === 'failed',
+                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': dl.status === 'pending',
+                    'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': dl.status === 'processing',
+                    'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': dl.status === 'completed',
+                    'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': dl.status === 'failed',
                   }"
                 >{{ dl.status }}</span>
               </td>
@@ -96,13 +96,13 @@ function exportDownload(id) {
                 <button
                   @click="exportDownload(dl.id)"
                   :disabled="!!dl.exported_at || dl.status !== 'completed'"
-                  class="text-xs text-blue-600 hover:text-blue-800 disabled:text-gray-300 disabled:cursor-not-allowed mr-3"
+                  class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 disabled:text-gray-300 dark:disabled:text-gray-600 disabled:cursor-not-allowed mr-3"
                 >
                   {{ dl.exported_at ? 'Exported' : 'Export' }}
                 </button>
                 <button
                   @click="deleteDownload(dl.id)"
-                  class="text-xs text-red-600 hover:text-red-800"
+                  class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
                 >
                   Delete
                 </button>
