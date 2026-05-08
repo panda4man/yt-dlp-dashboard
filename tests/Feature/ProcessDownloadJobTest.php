@@ -56,6 +56,44 @@ it('marks download as failed via the failed() queue callback', function () {
         ->and($download->error_message)->toBe('Queue-level failure');
 });
 
+it('writes episode.nfo to download directory', function () {
+    $download = Download::factory()->create([
+        'youtube_url'   => 'https://youtube.com/watch?v=abc123',
+        'thumbnail_url' => 'https://i.ytimg.com/vi/abc/default.jpg',
+        'status'        => DownloadStatus::Pending,
+        'uploaded_at'   => '2024-03-15',
+        'channel'       => 'My Channel',
+        'title'         => 'My Video',
+    ]);
+
+    $ytDlp = Mockery::mock(YtDlpService::class);
+    $ytDlp->shouldReceive('download')->once()->andReturnUsing(function ($url, $dir) {
+        if (!is_dir($dir)) mkdir($dir, 0755, true);
+        $path = $dir . '/video.mp4';
+        file_put_contents($path, str_repeat('x', 1024));
+        return $path;
+    });
+
+    $thumbnail = Mockery::mock(ThumbnailService::class);
+    $thumbnail->shouldReceive('generate')->once()->andReturnUsing(function ($thumbnailUrl, $dir) {
+        $path = $dir . '/thumbnail.jpg';
+        file_put_contents($path, 'img');
+        return $path;
+    });
+
+    app()->instance(YtDlpService::class, $ytDlp);
+    app()->instance(ThumbnailService::class, $thumbnail);
+
+    (new ProcessDownload($download))->handle($ytDlp, $thumbnail);
+
+    $nfoPath = storage_path('app/private/downloads/' . $download->id . '/episode.nfo');
+    expect(file_exists($nfoPath))->toBeTrue();
+
+    $xml = file_get_contents($nfoPath);
+    expect($xml)->toContain('<title>My Video</title>')
+        ->toContain('<showtitle>My Channel</showtitle>');
+});
+
 it('marks download as failed when yt-dlp throws', function () {
     $download = Download::factory()->create(['status' => DownloadStatus::Pending]);
 

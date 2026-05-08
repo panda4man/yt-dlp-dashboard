@@ -33,6 +33,9 @@ class ProcessDownload implements ShouldQueue
             $filePath      = $ytDlp->download($this->download->youtube_url, $outputDir);
             $thumbnailPath = $thumbnail->generate($this->download->thumbnail_url, $outputDir);
 
+            $nfoContent = app(\App\Services\PlexNfoService::class)->episodeNfo($this->download);
+            file_put_contents($outputDir . '/episode.nfo', $nfoContent);
+
             $fileSize    = filesize($filePath);
             $completedAt = now();
             $elapsed     = max(1, $completedAt->diffInSeconds($this->download->started_at));
