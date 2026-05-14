@@ -44,7 +44,7 @@ class StagingController extends Controller
 
     public function approve(Request $request, Download $download): JsonResponse
     {
-        abort_if($download->status === DownloadStatus::Completed, 422, 'Download already approved.');
+        abort_if($download->status !== DownloadStatus::Staged, 422, 'Download is not in staging.');
 
         $data = $request->validate([
             'channel'     => ['required', 'string', 'max:255'],
