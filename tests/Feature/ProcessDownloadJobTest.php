@@ -35,7 +35,7 @@ it('processes download successfully and updates model', function () {
 
     $download->refresh();
 
-    expect($download->status)->toBe(DownloadStatus::Completed)
+    expect($download->status)->toBe(DownloadStatus::Staged)
         ->and($download->file_path)->not->toBeNull()
         ->and($download->thumbnail_path)->not->toBeNull()
         ->and($download->file_size_bytes)->toBe(1024 * 1024)

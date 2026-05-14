@@ -43,7 +43,7 @@ class VideoController extends Controller
                 );
             }
 
-            if ($existing->status === DownloadStatus::Completed && !$request->boolean('force')) {
+            if (($existing->status === DownloadStatus::Completed || $existing->status === DownloadStatus::Staged) && !$request->boolean('force')) {
                 return response()->json(['already_downloaded' => true], 409);
             }
         }
