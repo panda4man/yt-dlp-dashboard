@@ -41,7 +41,7 @@ class ProcessDownload implements ShouldQueue
             $elapsed     = max(1, $completedAt->diffInSeconds($this->download->started_at));
 
             $this->download->update([
-                'status'             => DownloadStatus::Completed,
+                'status'             => DownloadStatus::Staged,
                 'file_path'          => 'downloads/' . $this->download->id . '/video.mp4',
                 'thumbnail_path'     => 'downloads/' . $this->download->id . '/thumbnail.jpg',
                 'file_size_bytes'    => $fileSize,
