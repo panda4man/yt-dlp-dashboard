@@ -1,8 +1,10 @@
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 import { useTheme } from '@/composables/useTheme'
 
 const { isDark, toggle } = useTheme()
+const stagedCount = computed(() => usePage().props.stagedCount ?? 0)
 </script>
 
 <template>
@@ -11,6 +13,13 @@ const { isDark, toggle } = useTheme()
       <div class="flex items-center gap-6">
         <span class="font-semibold text-gray-800 dark:text-gray-100">yt-dlp Dashboard</span>
         <Link href="/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Dashboard</Link>
+        <Link href="/staging" class="relative text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 flex items-center gap-1.5">
+          Staging
+          <span
+            v-if="stagedCount > 0"
+            class="inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full text-xs font-medium bg-indigo-600 text-white"
+          >{{ stagedCount }}</span>
+        </Link>
         <Link href="/history" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">History</Link>
       </div>
       <div class="flex items-center gap-4">
