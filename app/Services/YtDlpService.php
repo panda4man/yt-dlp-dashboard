@@ -10,7 +10,7 @@ class YtDlpService
     public function getMetadata(string $url): array
     {
         $result = Process::run([
-            'yt-dlp', '--dump-json', '--no-playlist', $url,
+            'yt-dlp', '--dump-json', '--no-playlist', '--js-runtimes', 'node', $url,
         ]);
 
         if (!$result->successful()) {
@@ -40,6 +40,7 @@ class YtDlpService
             '--merge-output-format', 'mp4',
             '-o', $outputDir . '/video.%(ext)s',
             '--no-playlist',
+            '--js-runtimes', 'node',
             $url,
         ]);
 
