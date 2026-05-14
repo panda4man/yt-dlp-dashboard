@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\DownloadStatus;
+use App\Models\Download;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,7 +40,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'stagedCount' => fn () => $request->user()
-                ? \App\Models\Download::where('status', \App\Enums\DownloadStatus::Staged)->count()
+                ? Download::where('status', DownloadStatus::Staged)->count()
                 : 0,
         ];
     }
