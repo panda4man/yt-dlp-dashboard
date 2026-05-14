@@ -1,5 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { router } from '@inertiajs/vue3'
 import AppLayout from '@/Layouts/AppLayout.vue'
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const saving = ref(false)
 const errorMsg = ref('')
 
 function formatDuration(seconds) {
+  if (!seconds && seconds !== 0) return '—'
   const m = Math.floor(seconds / 60)
   const s = seconds % 60
   return `${m}:${String(s).padStart(2, '0')}`
@@ -57,12 +59,13 @@ function csrfToken() {
 
 async function saveDraft() {
   if (!editing.value) return
+  const id = editing.value.id
   saving.value = true
   errorMsg.value = ''
   try {
-    const res = await fetch(`/staging/${editing.value.id}`, {
+    const res = await fetch(`/staging/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
       body: JSON.stringify(form.value),
     })
     if (!res.ok) {
@@ -71,7 +74,7 @@ async function saveDraft() {
       return
     }
     const updated = await res.json()
-    const idx = items.value.findIndex(i => i.id === editing.value.id)
+    const idx = items.value.findIndex(i => i.id === id)
     if (idx !== -1) items.value[idx] = { ...items.value[idx], ...updated }
     closeModal()
   } catch {
@@ -83,12 +86,13 @@ async function saveDraft() {
 
 async function approve() {
   if (!editing.value) return
+  const id = editing.value.id
   saving.value = true
   errorMsg.value = ''
   try {
-    const res = await fetch(`/staging/${editing.value.id}/approve`, {
+    const res = await fetch(`/staging/${id}/approve`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken() },
       body: JSON.stringify(form.value),
     })
     if (!res.ok) {
@@ -96,8 +100,9 @@ async function approve() {
       errorMsg.value = Object.values(data.errors ?? {}).flat()[0] ?? 'Approve failed.'
       return
     }
-    items.value = items.value.filter(i => i.id !== editing.value.id)
+    items.value = items.value.filter(i => i.id !== id)
     closeModal()
+    router.reload({ only: ['stagedCount'] })
   } catch {
     errorMsg.value = 'Network error.'
   } finally {
@@ -164,7 +169,7 @@ async function approve() {
         class="fixed inset-0 z-50 flex items-center justify-center"
         @click.self="closeModal"
       >
-        <div class="absolute inset-0 bg-black/60" @click="closeModal" />
+        <div class="absolute inset-0 bg-black/60" />
         <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md mx-4 p-6 border border-gray-200 dark:border-gray-700">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-semibold text-gray-900 dark:text-gray-100">Edit Metadata</h3>
