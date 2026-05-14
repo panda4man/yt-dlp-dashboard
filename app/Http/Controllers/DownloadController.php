@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DownloadStatus;
 use App\Models\Download;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response as HttpResponse;
@@ -13,7 +14,8 @@ class DownloadController extends Controller
 {
     public function index(): Response
     {
-        $downloads = Download::orderByDesc('created_at')
+        $downloads = Download::where('status', '!=', DownloadStatus::Staged->value)
+            ->orderByDesc('created_at')
             ->get([
                 'id', 'title', 'channel', 'duration_seconds', 'thumbnail_path',
                 'status', 'file_size_bytes', 'download_speed_bps',

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\StagingController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,4 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/downloads/{download}', [DownloadController::class, 'destroy']);
 
     Route::post('/downloads/{download}/export', [ExportController::class, 'store']);
+
+    Route::get('/staging', [StagingController::class, 'index'])->name('staging');
+    Route::put('/staging/{download}', [StagingController::class, 'update']);
+    Route::post('/staging/{download}/approve', [StagingController::class, 'approve']);
 });
