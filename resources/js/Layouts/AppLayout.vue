@@ -20,6 +20,7 @@ const stagedCount = computed(() => usePage().props.stagedCount ?? 0)
             class="inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full text-xs font-medium bg-indigo-600 text-white"
           >{{ stagedCount }}</span>
         </Link>
+        <Link href="/export-queue" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Export Queue</Link>
         <Link href="/history" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">History</Link>
       </div>
       <div class="flex items-center gap-4">

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\ExportQueueController;
 use App\Http\Controllers\StagingController;
 use App\Http\Controllers\VideoController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/downloads/{download}', [DownloadController::class, 'destroy']);
 
     Route::post('/downloads/{download}/export', [ExportController::class, 'store']);
+
+    Route::get('/export-queue', [ExportQueueController::class, 'index'])->name('export-queue');
+    Route::get('/api/export-queue', [ExportQueueController::class, 'poll']);
 
     Route::get('/staging', [StagingController::class, 'index'])->name('staging');
     Route::put('/staging/{download}', [StagingController::class, 'update']);

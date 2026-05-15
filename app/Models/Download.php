@@ -28,13 +28,17 @@ class Download extends Model
         'completed_at',
         'exported_at',
         'error_message',
+        'export_error',
+        'plex_refreshed_at',
+        'plex_error',
     ];
 
     protected $casts = [
-        'status'       => DownloadStatus::class,
-        'uploaded_at'  => 'date',
-        'started_at'   => 'datetime',
-        'completed_at' => 'datetime',
-        'exported_at'  => 'datetime',
+        'status'            => DownloadStatus::class,
+        'uploaded_at'       => 'date',
+        'started_at'        => 'datetime',
+        'completed_at'      => 'datetime',
+        'exported_at'       => 'datetime',
+        'plex_refreshed_at' => 'datetime',
     ];
 }

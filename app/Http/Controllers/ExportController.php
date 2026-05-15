@@ -3,27 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DownloadStatus;
+use App\Jobs\ExportDownload;
 use App\Models\Download;
-use App\Services\ExportService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 
 class ExportController extends Controller
 {
-    public function __construct(private ExportService $exporter) {}
-
-    public function store(Download $download): JsonResponse|RedirectResponse
+    public function store(Download $download): JsonResponse
     {
         if ($download->exported_at) {
             return response()->json(['message' => 'Already exported.'], 409);
         }
 
-        if ($download->status !== DownloadStatus::Completed) {
-            return response()->json(['message' => 'Download not complete.'], 422);
+        if (!in_array($download->status, [DownloadStatus::Completed, DownloadStatus::ExportFailed])) {
+            return response()->json(['message' => 'Download not ready for export.'], 422);
         }
 
-        $this->exporter->export($download);
+        $download->update(['status' => DownloadStatus::Exporting]);
+        ExportDownload::dispatch($download);
 
-        return redirect('/history');
+        return response()->json(['dispatched' => true]);
     }
 }

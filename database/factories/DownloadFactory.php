@@ -42,4 +42,19 @@ class DownloadFactory extends Factory
             'completed_at'       => now(),
         ]);
     }
+
+    public function exporting(): static
+    {
+        return $this->completed()->state(fn () => [
+            'status' => DownloadStatus::Exporting,
+        ]);
+    }
+
+    public function exportFailed(): static
+    {
+        return $this->completed()->state(fn () => [
+            'status'       => DownloadStatus::ExportFailed,
+            'export_error' => 'rsync: connection refused',
+        ]);
+    }
 }

@@ -32,10 +32,6 @@ function deleteDownload(id) {
   if (!confirm('Delete this download? Files will be removed.')) return
   router.delete(`/downloads/${id}`)
 }
-
-function exportDownload(id) {
-  router.post(`/downloads/${id}/export`)
-}
 </script>
 
 <template>
@@ -61,6 +57,7 @@ function exportDownload(id) {
               <th class="px-4 py-3">Speed</th>
               <th class="px-4 py-3">Downloaded</th>
               <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Exported</th>
               <th class="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -92,14 +89,8 @@ function exportDownload(id) {
                   }"
                 >{{ dl.status }}</span>
               </td>
+              <td class="px-4 py-3 text-gray-400 dark:text-gray-500 whitespace-nowrap text-xs">{{ dl.exported_at ? formatDate(dl.exported_at) : '—' }}</td>
               <td class="px-4 py-3 whitespace-nowrap">
-                <button
-                  @click="exportDownload(dl.id)"
-                  :disabled="!!dl.exported_at || dl.status !== 'completed'"
-                  class="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 disabled:text-gray-300 dark:disabled:text-gray-600 disabled:cursor-not-allowed mr-3"
-                >
-                  {{ dl.exported_at ? 'Exported' : 'Export' }}
-                </button>
                 <button
                   @click="deleteDownload(dl.id)"
                   class="text-xs text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"
