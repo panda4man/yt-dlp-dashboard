@@ -6,6 +6,7 @@ services:
     env_file: .env
     volumes:
       - ./storage/app/private/downloads:/var/www/html/storage/app/private/downloads
+      - ${PLEX_EXPORT_HOST_PATH}:/mnt/plex-export
     depends_on:
       mysql:
         condition: service_healthy
@@ -17,6 +18,7 @@ services:
     env_file: .env
     volumes:
       - ./storage/app/private/downloads:/var/www/html/storage/app/private/downloads
+      - ${PLEX_EXPORT_HOST_PATH}:/mnt/plex-export
     depends_on:
       - redis
       - mysql
