@@ -2,7 +2,7 @@ services:
   app:
     build: .
     ports:
-      - "${APP_PORT:-8888}:80"
+      - ${APP_PORT:-8888}:80
     env_file: .env
     volumes:
       - ./storage/app/private/downloads:/var/www/html/storage/app/private/downloads
@@ -11,7 +11,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
-
   horizon:
     build: .
     command: /horizon-entrypoint.sh
@@ -21,12 +20,10 @@ services:
     depends_on:
       - redis
       - mysql
-
   redis:
     image: redis:alpine
     volumes:
       - redis_data:/data
-
   mysql:
     image: mysql:8
     environment:
@@ -38,13 +35,18 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
-      - "3306:3306"
+      - 3306:3306
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test:
+        - CMD
+        - mysqladmin
+        - ping
+        - -h
+        - localhost
       interval: 5s
       timeout: 5s
       retries: 10
-
 volumes:
-  redis_data:
-  mysql_data:
+  redis_data: null
+  mysql_data: null
+networks: {}
