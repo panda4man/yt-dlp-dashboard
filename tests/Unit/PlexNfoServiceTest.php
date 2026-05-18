@@ -15,7 +15,8 @@ it('generates valid episode NFO XML', function () {
 
     $xml = (new PlexNfoService())->episodeNfo($download);
 
-    expect($xml)->toContain('<title>My Video</title>')
+    expect($xml)->toContain('<lockdata>true</lockdata>')
+        ->toContain('<title>My Video</title>')
         ->toContain('<showtitle>My Channel</showtitle>')
         ->toContain('<season>2024</season>')
         ->toContain('<episode>315</episode>')
@@ -34,6 +35,26 @@ it('omits premiered tag when uploaded_at is null', function () {
     $xml = (new PlexNfoService())->episodeNfo($download);
 
     expect($xml)->not->toContain('<premiered>');
+});
+
+it('includes aired tag matching premiered date', function () {
+    $download = Download::factory()->completed()->create([
+        'uploaded_at' => '2024-03-15',
+    ]);
+
+    $xml = (new PlexNfoService())->episodeNfo($download);
+
+    expect($xml)->toContain('<aired>2024-03-15</aired>');
+});
+
+it('omits aired tag when uploaded_at is null', function () {
+    $download = Download::factory()->completed()->create([
+        'uploaded_at' => null,
+    ]);
+
+    $xml = (new PlexNfoService())->episodeNfo($download);
+
+    expect($xml)->not->toContain('<aired>');
 });
 
 it('generates valid show NFO XML', function () {
