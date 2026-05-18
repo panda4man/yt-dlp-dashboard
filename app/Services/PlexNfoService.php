@@ -19,6 +19,7 @@ class PlexNfoService
         $lines = [
             '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',
             '<episodedetails>',
+            '  <lockdata>true</lockdata>',
             "  <title>{$title}</title>",
             "  <showtitle>{$channel}</showtitle>",
             "  <season>{$season}</season>",
@@ -27,7 +28,9 @@ class PlexNfoService
         ];
 
         if ($download->uploaded_at) {
-            $lines[] = "  <premiered>{$download->uploaded_at->format('Y-m-d')}</premiered>";
+            $date    = $download->uploaded_at->format('Y-m-d');
+            $lines[] = "  <premiered>{$date}</premiered>";
+            $lines[] = "  <aired>{$date}</aired>";
         }
 
         array_push($lines,
