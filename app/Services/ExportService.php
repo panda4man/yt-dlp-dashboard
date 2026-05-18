@@ -30,9 +30,10 @@ class ExportService
 
         copy($videoSrc, "{$episodeDir}/{$basename}.mp4");
 
-        if (file_exists("{$srcDir}/episode.nfo")) {
-            copy("{$srcDir}/episode.nfo", "{$episodeDir}/{$basename}.nfo");
-        }
+        file_put_contents(
+            "{$episodeDir}/{$basename}.nfo",
+            app(PlexNfoService::class)->episodeNfo($download)
+        );
 
         if (file_exists("{$srcDir}/thumbnail.jpg")) {
             copy("{$srcDir}/thumbnail.jpg", "{$episodeDir}/{$basename}-thumb.jpg");

@@ -119,6 +119,26 @@ it('sets exported_at on success', function () {
     expect($download->fresh()->exported_at)->not->toBeNull();
 });
 
+it('exports nfo generated fresh from PlexNfoService', function () {
+    $download = Download::factory()->completed()->create([
+        'title'       => 'My Video',
+        'uploaded_at' => '2024-03-15',
+    ]);
+    makeSourceFiles($download);
+
+    (new ExportService())->export($download);
+
+    $channel  = PlexNaming::sanitize($download->channel);
+    $season   = PlexNaming::season($download);
+    $basename = PlexNaming::basename($download);
+    $nfo      = file_get_contents("{$this->destDir}/{$channel}/Season {$season}/{$basename}.nfo");
+
+    expect($nfo)
+        ->toContain('<lockdata>true</lockdata>')
+        ->toContain('<aired>2024-03-15</aired>')
+        ->toContain('<title>My Video</title>');
+});
+
 it('throws RuntimeException when video file is missing', function () {
     $download = Download::factory()->completed()->create();
 
