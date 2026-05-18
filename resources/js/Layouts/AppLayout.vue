@@ -5,6 +5,11 @@ import { useTheme } from '@/composables/useTheme'
 
 const { isDark, toggle } = useTheme()
 const stagedCount = computed(() => usePage().props.stagedCount ?? 0)
+
+function isActive(href) {
+  const url = usePage().url
+  return href === '/' ? url === '/' : url.startsWith(href)
+}
 </script>
 
 <template>
@@ -12,16 +17,16 @@ const stagedCount = computed(() => usePage().props.stagedCount ?? 0)
     <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-6">
         <span class="font-semibold text-gray-800 dark:text-gray-100">yt-dlp Dashboard</span>
-        <Link href="/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Dashboard</Link>
-        <Link href="/staging" class="relative text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 flex items-center gap-1.5">
+        <Link href="/" :class="['text-sm hover:text-gray-900 dark:hover:text-gray-100', isActive('/') ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400']">Dashboard</Link>
+        <Link href="/staging" :class="['relative text-sm hover:text-gray-900 dark:hover:text-gray-100 flex items-center gap-1.5', isActive('/staging') ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400']">
           Staging
           <span
             v-if="stagedCount > 0"
             class="inline-flex items-center justify-center h-4 min-w-4 px-1 rounded-full text-xs font-medium bg-indigo-600 text-white"
           >{{ stagedCount }}</span>
         </Link>
-        <Link href="/export-queue" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">Export Queue</Link>
-        <Link href="/history" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100">History</Link>
+        <Link href="/export-queue" :class="['text-sm hover:text-gray-900 dark:hover:text-gray-100', isActive('/export-queue') ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400']">Export Queue</Link>
+        <Link href="/history" :class="['text-sm hover:text-gray-900 dark:hover:text-gray-100', isActive('/history') ? 'font-semibold text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400']">History</Link>
       </div>
       <div class="flex items-center gap-4">
         <button

@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/downloads/{download}', [DownloadController::class, 'destroy']);
 
     Route::post('/downloads/{download}/export', [ExportController::class, 'store']);
+    Route::post('/downloads/{download}/reexport', [ExportController::class, 'reexport']);
 
     Route::get('/export-queue', [ExportQueueController::class, 'index'])->name('export-queue');
     Route::get('/api/export-queue', [ExportQueueController::class, 'poll']);

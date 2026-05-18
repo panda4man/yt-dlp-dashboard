@@ -74,6 +74,35 @@ async function triggerExport(id) {
   }
 }
 
+async function triggerReexport(id) {
+  actionError.value = ''
+
+  const fromRecent = recent.value.findIndex(i => i.id === id)
+  let item = null
+
+  if (fromRecent !== -1) {
+    item = { ...recent.value[fromRecent], status: 'exporting' }
+    recent.value.splice(fromRecent, 1)
+  }
+
+  if (item) exporting.value.push(item)
+
+  try {
+    const res = await fetch(`/downloads/${id}/reexport`, {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': csrfToken(), 'Accept': 'application/json' },
+    })
+    if (!res.ok) {
+      const data = await res.json()
+      actionError.value = data.message ?? 'Re-export failed to start.'
+      await pollQueue()
+    }
+  } catch {
+    actionError.value = 'Network error.'
+    await pollQueue()
+  }
+}
+
 let interval
 onMounted(() => {
   interval = setInterval(pollQueue, 5000)
@@ -201,25 +230,33 @@ onUnmounted(() => clearInterval(interval))
               <p class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{{ item.title }}</p>
               <p class="text-xs text-gray-500 dark:text-gray-400">{{ item.channel }} · {{ formatBytes(item.file_size_bytes) }}</p>
             </div>
-            <div class="flex-shrink-0 flex items-center gap-1.5">
-              <!-- Plex refresh succeeded -->
-              <template v-if="item.plex_refreshed_at">
-                <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span class="text-xs text-green-600 dark:text-green-400">Plex refreshed</span>
-              </template>
-              <!-- Plex refresh failed (soft warning) -->
-              <template v-else-if="item.plex_error">
-                <svg class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                </svg>
-                <span class="text-xs text-yellow-600 dark:text-yellow-400" :title="item.plex_error">Plex refresh failed</span>
-              </template>
-              <!-- Plex refresh pending -->
-              <template v-else>
-                <span class="text-xs text-gray-400 dark:text-gray-500">Plex pending</span>
-              </template>
+            <div class="flex-shrink-0 flex items-center gap-3">
+              <div class="flex items-center gap-1.5">
+                <!-- Plex refresh succeeded -->
+                <template v-if="item.plex_refreshed_at">
+                  <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  <span class="text-xs text-green-600 dark:text-green-400">Plex refreshed</span>
+                </template>
+                <!-- Plex refresh failed (soft warning) -->
+                <template v-else-if="item.plex_error">
+                  <svg class="w-4 h-4 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                  </svg>
+                  <span class="text-xs text-yellow-600 dark:text-yellow-400" :title="item.plex_error">Plex refresh failed</span>
+                </template>
+                <!-- Plex refresh pending -->
+                <template v-else>
+                  <span class="text-xs text-gray-400 dark:text-gray-500">Plex pending</span>
+                </template>
+              </div>
+              <button
+                @click="triggerReexport(item.id)"
+                class="text-xs px-3 py-1.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 font-medium"
+              >
+                Re-export
+              </button>
             </div>
           </li>
         </ul>

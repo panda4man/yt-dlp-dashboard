@@ -54,3 +54,37 @@ it('returns 422 if download status is not ready for export', function () {
         $this->postJson("/downloads/{$download->id}/export")->assertStatus(422);
     }
 });
+
+it('reexport dispatches job and clears exported_at for already-exported download', function () {
+    Queue::fake();
+    $download = Download::factory()->completed()->create(['exported_at' => now()]);
+
+    $this->postJson("/downloads/{$download->id}/reexport")
+        ->assertOk()
+        ->assertJson(['dispatched' => true]);
+
+    Queue::assertPushed(ExportDownload::class, fn ($job) => $job->download->id === $download->id);
+    expect($download->fresh()->exported_at)->toBeNull();
+});
+
+it('reexport sets status to exporting and clears plex fields', function () {
+    Queue::fake();
+    $download = Download::factory()->completed()->create([
+        'exported_at'       => now(),
+        'plex_refreshed_at' => now(),
+        'plex_error'        => 'some plex error',
+    ]);
+
+    $this->postJson("/downloads/{$download->id}/reexport");
+
+    $fresh = $download->fresh();
+    expect($fresh->status)->toBe(DownloadStatus::Exporting)
+        ->and($fresh->plex_refreshed_at)->toBeNull()
+        ->and($fresh->plex_error)->toBeNull();
+});
+
+it('reexport returns 422 for download not yet exported', function () {
+    $download = Download::factory()->completed()->create(['exported_at' => null]);
+
+    $this->postJson("/downloads/{$download->id}/reexport")->assertStatus(422);
+});
